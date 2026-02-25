@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>115年繁星推薦篩選系統</title>
+    <title>115年繁星推薦落點建議</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #0f172a; }
         
-        /* 門檻標籤：緊湊高對比 */
+        /* 門檻標籤 */
         .std-tag { padding: 1px 0; border-radius: 4px; font-size: 10px; font-weight: 900; text-align: center; display: block; width: 34px; }
         .tag-頂標 { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .tag-前標 { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
@@ -21,7 +21,7 @@
         .score-input { border: 2px solid #e2e8f0; transition: all 0.2s; }
         .score-input:focus { border-color: #2563eb; background: #fff; outline: none; }
 
-        /* 響應式配置：確保不被裁切 */
+        /* 響應式配置 */
         .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 640px) { .input-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1024px) { .input-grid { grid-template-columns: repeat(7, 1fr); } }
@@ -30,16 +30,16 @@
         input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased flex flex-col min-h-screen">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-md">
         <div class="max-w-6xl mx-auto p-4 sm:p-6">
             <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">🎓</span>
-                    <h1 class="text-xl font-black text-slate-950 tracking-tighter">115 繁星落點診斷</h1>
+                    <h1 class="text-xl font-black text-slate-950 tracking-tighter">115 年繁星推薦落點建議</h1>
                 </div>
-                <div id="data-status" class="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 uppercase tracking-tighter">Database Loading...</div>
+                <div id="data-status" class="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 uppercase tracking-tighter">Connecting...</div>
             </div>
             
             <div class="input-grid mb-5">
@@ -50,32 +50,32 @@
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-400 block mb-1">國文</label>
-                    <input type="number" id="ch" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="ch" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-ch" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-400 block mb-1">英文</label>
-                    <input type="number" id="en" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="en" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-en" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-blue-500 block mb-1">數A</label>
-                    <input type="number" id="ma" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="ma" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-ma" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-emerald-500 block mb-1">數B</label>
-                    <input type="number" id="mb" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="mb" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-mb" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-400 block mb-1">社會</label>
-                    <input type="number" id="so" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="so" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-so" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-400 block mb-1">自然</label>
-                    <input type="number" id="sc" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <input type="number" id="sc" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div id="level-sc" class="text-[10px] text-center mt-1 font-black h-4"></div>
                 </div>
             </div>
@@ -86,18 +86,20 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-4 sm:p-6">
-        <section id="search-section" class="mb-6 space-y-4">
+    <main class="max-w-5xl mx-auto p-4 sm:p-6 flex-grow w-full">
+        <section id="search-section" class="mb-6 p-6 bg-blue-50/50 border-2 border-blue-100 rounded-[2.5rem] space-y-4 shadow-sm">
             <div class="flex items-center justify-between px-2">
-                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">進階篩選條件 (選填)</h2>
+                <h2 class="text-xs font-black text-blue-700 uppercase tracking-widest flex items-center gap-2">
+                    <span class="text-base">💡</span> 進階篩選工具 (選填)
+                </h2>
                 <div id="result-count" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-black">0 筆符合</div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div class="md:col-span-4">
-                    <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 搜尋校名或科系..." class="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold shadow-sm focus:ring-4 ring-blue-50 outline-none">
+                <div class="md:col-span-4 relative">
+                    <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 搜尋大學或科系名稱..." class="w-full bg-white border-2 border-white rounded-2xl px-5 py-4 text-sm font-bold shadow-sm focus:ring-4 ring-blue-200 outline-none transition-all">
                 </div>
                 <div class="md:col-span-3">
-                    <select id="regionFilter" onchange="runFilter()" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold text-slate-600 outline-none">
+                    <select id="regionFilter" onchange="runFilter()" class="w-full bg-white border-2 border-white rounded-2xl px-5 py-4 text-sm font-bold text-slate-600 outline-none shadow-sm">
                         <option value="ALL">📍 所有地區</option>
                         <option value="NORTH">北部地區</option>
                         <option value="CENTRAL">中部地區</option>
@@ -107,14 +109,14 @@
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <select id="typeFilter" onchange="runFilter()" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold text-slate-600 outline-none">
-                        <option value="ALL">🏛️ 性質</option>
+                    <select id="typeFilter" onchange="runFilter()" class="w-full bg-white border-2 border-white rounded-2xl px-5 py-4 text-sm font-bold text-slate-600 outline-none shadow-sm">
+                        <option value="ALL">🏛️ 所有學校</option>
                         <option value="PUBLIC">國立</option>
                         <option value="PRIVATE">私立</option>
                     </select>
                 </div>
                 <div class="md:col-span-3">
-                    <select id="groupFilter" onchange="runFilter()" class="w-full bg-slate-950 text-white rounded-2xl px-5 py-4 text-sm font-black outline-none">
+                    <select id="groupFilter" onchange="runFilter()" class="w-full bg-slate-900 text-white rounded-2xl px-5 py-4 text-sm font-black outline-none shadow-lg">
                         <option value="ALL">所有類群</option>
                         <option value="第一類群">第一類群</option>
                         <option value="第二類群">第二類群</option>
@@ -126,10 +128,14 @@
 
         <div id="result-container" class="space-y-4">
             <div class="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
-                <p class="text-slate-300 font-black text-lg">輸入成績並點擊「執行篩選」以獲取分析結果</p>
+                <p class="text-slate-300 font-black text-lg">請於上方輸入成績以獲取分析結果</p>
             </div>
         </div>
     </main>
+
+    <footer class="text-center py-8 text-slate-400 text-[11px] font-bold tracking-widest border-t border-slate-100 bg-white/50 mt-10">
+        桃園市立觀音高中 林仟弘老師製作
+    </footer>
 
     <script>
         let db = [];
@@ -147,10 +153,10 @@
             try {
                 const res = await fetch('data.json');
                 db = await res.json();
-                const btn = document.getElementById('btn-search');
-                btn.disabled = false; btn.innerText = "立即執行篩選分析";
                 document.getElementById('data-status').innerText = "Database Connected";
                 document.getElementById('data-status').className = "text-[9px] font-black text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 uppercase";
+                const btn = document.getElementById('btn-search');
+                btn.disabled = false; btn.innerText = "立即執行篩選分析";
             } catch (e) { document.getElementById('data-status').innerText = "Connect Failed"; }
         }
 
@@ -173,6 +179,10 @@
         }
 
         function firstSearch() {
+            // 溫馨提示視窗 (潤稿後)
+            const message = "【溫馨提醒】\n\n本系統之篩選結果僅供初步參考，不代表實際錄取結果。\n\n繁星推薦涉及多元比序項目，建議您在做出最後決定前，務必詳閱正式招生簡章，並與老師、家長或同學充分溝通討論，以確保選擇最適合您的志願。\n\n祝福您選系順利，金榜題名！";
+            alert(message);
+            
             document.getElementById('search-section').style.display = 'block';
             runFilter();
             window.scrollTo({ top: document.getElementById('search-section').offsetTop - 280, behavior: 'smooth' });
@@ -210,16 +220,12 @@
                 const name = i['校系代碼名稱'];
                 if(grp !== 'ALL' && i['類群'] !== grp) return false;
                 if(key && !name.toLowerCase().includes(key)) return false;
-                
-                // 國私立篩選邏輯 (依照需求：有"國立"字樣則為國立)
                 if(typ === 'PUBLIC' && !name.includes("國立")) return false;
                 if(typ === 'PRIVATE' && name.includes("國立")) return false;
-
                 if(reg !== 'ALL') {
                     const matchRegion = regionMapping[reg].some(school => name.startsWith(school));
                     if(!matchRegion) return false;
                 }
-
                 return (i['國文門檻點數']||0) <= u['國文'] && (i['英文門檻點數']||0) <= u['英文'] && 
                        (i['數學A門檻點數']||0) <= u['數學A'] && (i['數學B門檻點數']||0) <= u['數學B'] && 
                        (i['社會門檻點數']||0) <= u['社會'] && (i['自然門檻點數']||0) <= u['自然'];
