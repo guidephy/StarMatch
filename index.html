@@ -7,135 +7,146 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #0f172a; }
         
-        /* 門檻標籤：緊湊化 */
+        /* 門檻標籤：更深的文字深度 */
         .std-tag { padding: 1px 0; border-radius: 4px; font-size: 10px; font-weight: 900; text-align: center; display: block; width: 34px; }
         .tag-頂標 { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .tag-前標 { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
         .tag-均標 { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
-        .tag-後標 { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+        .tag-後標 { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
         .tag-底標 { background: #fef3c7; color: #92400e; }
-        .tag-不採計 { background: #f8fafc; color: #cbd5e1; border: 1px solid #f1f5f9; }
+        .tag-不採計 { background: #f8fafc; color: #94a3b8; border: 1px solid #f1f5f9; }
 
-        /* 輸入框聚焦效果 */
         .score-input { border: 2px solid #e2e8f0; transition: all 0.2s; }
-        .score-input:focus { border-color: #2563eb; background: #ffffff; outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .score-input:focus { border-color: #2563eb; background: #fff; outline: none; }
 
-        /* 響應式佈局：確保在不同視窗下不被裁切 */
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+        /* 響應式配置 */
+        .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 640px) { .input-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1024px) { .input-grid { grid-template-columns: repeat(7, 1fr); } }
 
-        #search-section { display: none; }
+        #search-section { display: none; } /* 初始隱藏，篩選後顯示 */
         input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
 <body class="antialiased">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-md">
-        <div class="max-w-5xl mx-auto p-4 sm:p-6">
-            <div class="flex items-center justify-between mb-6">
+        <div class="max-w-6xl mx-auto p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">🎓</span>
                     <h1 class="text-xl font-black text-slate-950 tracking-tighter">115 繁星落點診斷</h1>
                 </div>
-                <div id="data-status" class="text-[10px] font-black text-slate-400 bg-slate-100 px-2 py-1 rounded-full uppercase">Database Loading...</div>
+                <div id="data-status" class="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 uppercase tracking-tighter">Connecting...</div>
             </div>
             
-            <div class="input-grid mb-6">
+            <div class="input-grid mb-5">
                 <div>
-                    <label class="text-[10px] font-black text-blue-600 block mb-1">在校學業</label>
-                    <input type="number" id="rank" placeholder="校內%" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
+                    <label class="text-[10px] font-black text-blue-700 block mb-1">在校學業</label>
+                    <input type="number" id="rank" placeholder="校內%" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                     <div class="h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">國文分數</label>
-                    <input type="number" id="ch" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-ch" class="text-[10px] text-center mt-1 font-black h-4 transition-colors"></div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1">國文</label>
+                    <input type="number" id="ch" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-ch" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">英文分數</label>
-                    <input type="number" id="en" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-en" class="text-[10px] text-center mt-1 font-black h-4"></div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1">英文</label>
+                    <input type="number" id="en" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-en" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-blue-500 block mb-1">數A分數</label>
-                    <input type="number" id="ma" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-ma" class="text-[10px] text-center mt-1 font-black h-4"></div>
+                    <label class="text-[10px] font-black text-blue-500 block mb-1">數A</label>
+                    <input type="number" id="ma" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-ma" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-emerald-500 block mb-1">數B分數</label>
-                    <input type="number" id="mb" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-mb" class="text-[10px] text-center mt-1 font-black h-4"></div>
+                    <label class="text-[10px] font-black text-emerald-500 block mb-1">數B</label>
+                    <input type="number" id="mb" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-mb" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">社會分數</label>
-                    <input type="number" id="so" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-so" class="text-[10px] text-center mt-1 font-black h-4"></div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1">社會</label>
+                    <input type="number" id="so" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-so" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">自然分數</label>
-                    <input type="number" id="sc" placeholder="請填寫" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-900">
-                    <div id="level-sc" class="text-[10px] text-center mt-1 font-black h-4"></div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1">自然</label>
+                    <input type="number" id="sc" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-sc" class="text-[10px] text-center mt-0.5 font-black h-4"></div>
                 </div>
             </div>
 
-            <div class="flex gap-3">
-                <select id="groupFilter" class="bg-slate-950 text-white rounded-2xl px-6 py-4 text-sm font-black transition-transform active:scale-95">
-                    <option value="ALL">所有類群</option>
-                    <option value="第一類群">第一類群</option>
-                    <option value="第二類群">第二類群</option>
-                    <option value="第三類群">第三類群</option>
-                </select>
-                <button onclick="firstSearch()" id="btn-search" disabled class="flex-1 bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-200 active:scale-95 transition-all text-lg">
-                    請先輸入分數
-                </button>
-            </div>
+            <button onclick="firstSearch()" id="btn-search" disabled class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-100 active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2">
+                請輸入成績
+            </button>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto p-4 sm:p-6">
         <section id="search-section" class="mb-6 space-y-4">
             <div class="flex items-center justify-between px-2">
-                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">篩選結果分析</h2>
-                <div id="result-count" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-black shadow-lg shadow-blue-100">0 筆符合</div>
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">進階篩選條件 (選填)</h2>
+                <div id="result-count" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-black">0 筆符合</div>
             </div>
-            <div class="relative">
-                <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 搜尋特定大學名稱或科系名稱 (選填)..." class="w-full bg-white border-2 border-slate-100 rounded-3xl px-6 py-5 text-base font-bold shadow-sm focus:ring-4 ring-blue-50/50 focus:border-blue-500 outline-none transition-all">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                <div class="md:col-span-5 relative">
+                    <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 搜尋校名或系名..." class="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-base font-bold shadow-sm focus:ring-4 ring-blue-50 outline-none">
+                </div>
+                <div class="md:col-span-4">
+                    <select id="regionFilter" onchange="runFilter()" class="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 text-base font-bold text-slate-600 outline-none">
+                        <option value="ALL">📍 所有地區</option>
+                        <option value="NORTH">🏛️ 北部地區</option>
+                        <option value="CENTRAL">🏛️ 中部地區</option>
+                        <option value="SOUTH">🏛️ 南部地區</option>
+                        <option value="EAST">🏛️ 東部地區</option>
+                        <option value="ISLAND">🏛️ 離島地區</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <select id="groupFilter" onchange="runFilter()" class="w-full bg-slate-900 text-white rounded-2xl px-5 py-4 text-base font-black outline-none">
+                        <option value="ALL">所有類群</option>
+                        <option value="第一類群">第一類群</option>
+                        <option value="第二類群">第二類群</option>
+                        <option value="第三類群">第三類群</option>
+                    </select>
+                </div>
             </div>
         </section>
 
         <div id="result-container" class="space-y-4">
             <div class="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
-                <p class="text-slate-300 font-black text-lg">請於上方輸入成績以獲取分析結果</p>
+                <p class="text-slate-300 font-black text-lg">輸入成績並點擊「執行篩選」以獲取分析結果</p>
             </div>
         </div>
     </main>
 
     <script>
         let db = [];
-        const stdMap = { 
-            '國文': [13,12,10,9,7], '英文': [13,11,8,5,3], 
-            '數學A': [12,10,8,5,4], '數學B': [11,9,5,3,2], 
-            '社會': [13,12,10,8,7], '自然': [13,12,9,7,5] 
+        const stdMap = { '國文': [13,12,10,9,7], '英文': [13,11,8,5,3], '數學A': [12,10,8,5,4], '數學B': [11,9,5,3,2], '社會': [13,12,10,8,7], '自然': [13,12,9,7,5] };
+        
+        // 地區映射資料庫
+        const regionMapping = {
+            'NORTH': ["國立臺灣大學", "國立臺灣師範大學", "東吳大學", "國立政治大學", "中原大學", "國立清華大學", "國立陽明交通大學", "淡江大學", "國立中央大學", "中國文化大學", "大同大學", "輔仁大學", "國立臺灣海洋大學", "國立臺北藝術大學", "長庚大學", "國立臺北教育大學", "臺北市立大學", "國立體育大學", "元智大學", "中華大學", "華梵大學", "銘傳大學", "世新大學", "實踐大學", "國立臺灣藝術大學", "玄奘大學", "真理大學", "國立臺北大學", "臺北醫學大學", "開南大學", "康寧大學", "馬偕醫學院"],
+            'CENTRAL': ["國立中興大學", "東海大學", "中國醫藥大學", "逢甲大學", "靜宜大學", "國立彰化師範大學", "中山醫學大學", "國立臺中教育大學", "大葉大學", "國立暨南國際大學", "國立臺灣體育運動大學", "亞洲大學", "國立聯合大學"],
+            'SOUTH': ["國立成功大學", "高雄醫學大學", "國立高雄師範大學", "國立中山大學", "國立臺南大學", "國立屏東大學", "國立中正大學", "義守大學", "長榮大學", "國立臺灣體育運動大學", "南華大學", "國立臺南藝術大學", "國立嘉義大學", "國立高雄大學", "中信金融管理學院"],
+            'EAST': ["國立東華大學", "國立臺東大學", "慈濟大學", "佛光大學", "國立宜蘭大學"],
+            'ISLAND': ["國立金門大學"]
         };
 
         async function init() {
             try {
                 const res = await fetch('data.json');
                 db = await res.json();
-                document.getElementById('data-status').innerText = "Database Connected";
-                document.getElementById('data-status').className = "text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full uppercase";
                 const btn = document.getElementById('btn-search');
-                btn.disabled = false;
-                btn.innerText = "立即執行篩選分析";
+                btn.disabled = false; btn.innerText = "立即執行篩選分析";
+                document.getElementById('data-status').innerText = "Database Connected";
+                document.getElementById('data-status').className = "text-[9px] font-black text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 uppercase";
             } catch (e) {
-                document.getElementById('data-status').innerText = "Database Error";
+                document.getElementById('data-status').innerText = "Offline Mode";
             }
         }
 
@@ -146,24 +157,15 @@
                 const val = parseInt(document.getElementById(id).value);
                 const info = document.getElementById('level-'+id);
                 if(!val && val !== 0) { info.innerText = ""; return; }
-                
                 const arr = stdMap[subName];
-                let lv = "未達標";
-                let color = "text-slate-400";
-                if(val >= arr[0]) { lv="頂標"; color="text-red-600"; }
-                else if(val >= arr[1]) { lv="前標"; color="text-orange-500"; }
-                else if(val >= arr[2]) { lv="均標"; color="text-blue-600"; }
+                let lv = "未達標", color = "text-slate-400";
+                if(val >= arr[0]) { lv="頂標"; color="text-red-700"; }
+                else if(val >= arr[1]) { lv="前標"; color="text-orange-600"; }
+                else if(val >= arr[2]) { lv="均標"; color="text-blue-700"; }
                 else if(val >= arr[3]) { lv="後標"; color="text-slate-500"; }
-                else if(val >= arr[4]) { lv="底標"; color="text-amber-800"; }
-                info.innerText = lv;
-                info.className = `text-[10px] text-center mt-1 font-black h-4 ${color}`;
+                else if(val >= arr[4]) { lv="底標"; color="text-amber-900"; }
+                info.innerText = lv; info.className = `text-[10px] text-center mt-1 font-black h-4 ${color}`;
             });
-        }
-
-        function getPt(sub, score) {
-            const arr = stdMap[sub];
-            for(let i=0; i<5; i++) if(score >= arr[i]) return 5-i;
-            return 0;
         }
 
         function firstSearch() {
@@ -173,25 +175,15 @@
         }
 
         function renderHistory(item, yr) {
-            const n1 = item[yr+'_一輪人數'] || '--';
-            const s1 = (item[yr+'_一輪標準'] || '--').split('\n')[0];
-            const n2 = item[yr+'_二輪人數'] || '--';
-            const s2 = (item[yr+'_二輪標準'] || '--').split('\n')[0];
-            
+            const n1 = item[yr+'_一輪人數'] || '--', s1 = (item[yr+'_一輪標準'] || '--').split('\n')[0];
+            const n2 = item[yr+'_二輪人數'] || '--', s2 = (item[yr+'_二輪標準'] || '--').split('\n')[0];
             if(n1 === '--' && n2 === '--') return `<div class="bg-slate-50 rounded-xl p-2.5 text-center text-[10px] text-slate-300 font-bold">${yr} 無資料</div>`;
-
             return `
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-3">
-                    <div class="text-[9px] font-black text-slate-400 mb-2 border-b border-slate-200 pb-1 uppercase tracking-tighter">
-                        ${yr}學年度錄取實況
-                    </div>
-                    <div class="space-y-1 text-[11px] font-bold text-slate-800 leading-none">
-                        <div class="flex justify-between items-center">
-                            <span>一輪: ${n1}人 (${s1})</span>
-                        </div>
-                        <div class="flex justify-between items-center mt-1">
-                            <span>二輪: ${n2}人 (${s2})</span>
-                        </div>
+                    <div class="text-[9px] font-black text-slate-400 mb-2 border-b border-slate-200 pb-1 uppercase tracking-tighter">${yr}年度</div>
+                    <div class="space-y-1 text-[11px] font-bold text-slate-900 leading-none">
+                        <div>一輪: ${n1}人 (${s1})</div>
+                        <div class="mt-1">二輪: ${n2}人 (${s2})</div>
                     </div>
                 </div>`;
         }
@@ -206,35 +198,37 @@
                 '自然': getPt('自然', parseInt(document.getElementById('sc').value || 0))
             };
             const grp = document.getElementById('groupFilter').value;
+            const reg = document.getElementById('regionFilter').value;
             const key = document.getElementById('keyword').value.toLowerCase();
 
             const res = db.filter(i => {
                 if(grp !== 'ALL' && i['類群'] !== grp) return false;
                 if(key && !i['校系代碼名稱'].toLowerCase().includes(key)) return false;
+                if(reg !== 'ALL') {
+                    const matchRegion = regionMapping[reg].some(school => i['校系代碼名稱'].startsWith(school));
+                    if(!matchRegion) return false;
+                }
                 return (i['國文門檻點數']||0) <= u['國文'] && (i['英文門檻點數']||0) <= u['英文'] && 
                        (i['數學A門檻點數']||0) <= u['數學A'] && (i['數學B門檻點數']||0) <= u['數學B'] && 
                        (i['社會門檻點數']||0) <= u['社會'] && (i['自然門檻點數']||0) <= u['自然'];
             });
 
-            document.getElementById('result-count').innerText = `${res.length} 筆符合條件`;
+            document.getElementById('result-count').innerText = `${res.length} 筆符合`;
             const container = document.getElementById('result-container');
-            
             if(res.length === 0) {
-                container.innerHTML = `<div class="p-20 text-center text-slate-400 font-bold bg-white rounded-[2rem] border-2 border-dashed border-slate-200">查無符合條件之校系，請調整分數。</div>`;
+                container.innerHTML = `<div class="p-20 text-center text-slate-400 font-bold bg-white rounded-[2rem] border-2 border-dashed border-slate-200">查無結果</div>`;
                 return;
             }
 
             container.innerHTML = res.map(i => `
-                <div class="bg-white rounded-[2.5rem] border border-slate-200 p-6 md:p-8 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-300">
+                <div class="bg-white rounded-[2.5rem] border border-slate-200 p-6 md:p-8 shadow-sm hover:shadow-2xl transition-all duration-300">
                     <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest">${i['類群']}</span>
-                                <a href="${i['網址']}" target="_blank" class="text-blue-600 text-[10px] font-black flex items-center gap-1 hover:underline">
-                                    校系分則簡章 ↗
-                                </a>
+                                <span class="bg-slate-950 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest">${i['類群']}</span>
+                                <a href="${i['網址']}" target="_blank" class="text-blue-700 text-[10px] font-black hover:underline">校系分則簡章 ↗</a>
                             </div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-tight">${i['校系代碼名稱']}</h3>
+                            <h3 class="text-xl font-black text-slate-950 tracking-tight leading-tight">${i['校系代碼名稱']}</h3>
                         </div>
                         <div class="flex items-center gap-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-100">
                             ${['國文','英文','數學A','數學B','社會','自然'].map(s => {
@@ -246,16 +240,12 @@
                             }).join('')}
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        ${renderHistory(i, '114')}
-                        ${renderHistory(i, '113')}
-                        ${renderHistory(i, '112')}
-                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${renderHistory(i,'114')}${renderHistory(i,'113')}${renderHistory(i,'112')}</div>
                 </div>
             `).join('');
         }
 
+        function getPt(sub, score) { const arr = stdMap[sub]; for(let i=0; i<5; i++) if(score >= arr[i]) return 5-i; return 0; }
         window.onload = init;
     </script>
 </body>
