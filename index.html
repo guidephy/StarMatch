@@ -3,93 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>115繁星推薦落點查詢</title>
+    <title>115年繁星推薦篩選系統</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #0f172a; }
-        /* 縮小標籤 */
-        .std-tag { padding: 1px 0; border-radius: 4px; font-size: 10px; font-weight: 900; text-align: center; display: block; width: 38px; }
+        
+        /* 標籤設計 */
+        .std-tag { padding: 1px 0; border-radius: 4px; font-size: 10px; font-weight: 900; text-align: center; display: block; width: 36px; }
         .tag-頂標 { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
         .tag-前標 { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
         .tag-均標 { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
         .tag-不採計 { background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; }
         
-        .level-label { font-size: 10px; font-weight: 900; margin-top: 2px; }
-        .history-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+        /* 輸入框微調 */
+        .score-input { transition: all 0.2s; border: 2px solid transparent; }
+        .score-input:focus { border-color: #2563eb; background: #fff; }
         
-        /* 隱藏搜尋區 */
-        #search-section { display: none; }
-        
+        /* 響應式容器 */
+        .rwd-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        @media (min-width: 640px) { .rwd-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1024px) { .rwd-grid { grid-template-columns: repeat(7, 1fr); } }
+
         input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        #search-section { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto p-4">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4">
-                <h1 class="text-xl font-black tracking-tighter text-slate-950">🎓 115 繁星篩選</h1>
-                <div id="data-status" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-100">資料已同步</div>
+                <h1 class="text-xl font-black text-slate-950 tracking-tighter">🎓 115 繁星篩選器</h1>
+                <span id="data-status" class="text-[10px] font-black text-slate-300">資料載入中...</span>
             </div>
             
-            <div class="grid grid-cols-6 gap-2 mb-4">
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">國文</label>
-                    <input type="number" id="ch" value="13" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-ch" class="level-label h-4"></div>
+            <div class="rwd-grid mb-6">
+                <div>
+                    <label class="text-[10px] font-black text-blue-600 block mb-1 uppercase">在校學業</label>
+                    <input type="number" id="rank" placeholder="校內%" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
                 </div>
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">英文</label>
-                    <input type="number" id="en" value="13" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-en" class="level-label h-4"></div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1 uppercase">國文分數</label>
+                    <input type="number" id="ch" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-ch" class="text-[10px] text-center mt-1 font-black h-3"></div>
                 </div>
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-blue-500/60 block mb-1">數A</label>
-                    <input type="number" id="ma" value="12" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-ma" class="level-label h-4"></div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1 uppercase">英文分數</label>
+                    <input type="number" id="en" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-en" class="text-[10px] text-center mt-1 font-black h-3"></div>
                 </div>
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-emerald-500/60 block mb-1">數B</label>
-                    <input type="number" id="mb" value="11" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-mb" class="level-label h-4"></div>
+                <div>
+                    <label class="text-[10px] font-black text-blue-500 block mb-1 uppercase">數A分數</label>
+                    <input type="number" id="ma" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-ma" class="text-[10px] text-center mt-1 font-black h-3"></div>
                 </div>
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">社會</label>
-                    <input type="number" id="so" value="13" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-so" class="level-label h-4"></div>
+                <div>
+                    <label class="text-[10px] font-black text-emerald-500 block mb-1 uppercase">數B分數</label>
+                    <input type="number" id="mb" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-mb" class="text-[10px] text-center mt-1 font-black h-3"></div>
                 </div>
-                <div class="text-center">
-                    <label class="text-[10px] font-black text-slate-400 block mb-1">自然</label>
-                    <input type="number" id="sc" value="12" oninput="updateUI()" class="w-full bg-slate-100 border-none rounded-lg py-2 text-center text-lg font-black text-slate-900 focus:ring-2 ring-blue-600">
-                    <div id="info-sc" class="level-label h-4"></div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1 uppercase">社會分數</label>
+                    <input type="number" id="so" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-so" class="text-[10px] text-center mt-1 font-black h-3"></div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 block mb-1 uppercase">自然分數</label>
+                    <input type="number" id="sc" placeholder="輸入" oninput="updateLevels()" class="score-input w-full bg-slate-50 rounded-xl py-3 text-center text-lg font-black text-slate-950">
+                    <div id="level-sc" class="text-[10px] text-center mt-1 font-black h-3"></div>
                 </div>
             </div>
 
-            <div class="flex gap-2">
-                <select id="groupFilter" class="bg-slate-900 text-white rounded-xl px-4 py-3 text-xs font-black shadow-lg">
+            <div class="flex gap-3">
+                <select id="groupFilter" class="bg-slate-950 text-white rounded-2xl px-6 py-4 text-sm font-black shadow-xl shadow-slate-200">
                     <option value="ALL">所有類群</option>
                     <option value="第一類群">第一類群</option>
                     <option value="第二類群">第二類群</option>
                     <option value="第三類群">第三類群</option>
                 </select>
-                <button onclick="runFirstFilter()" class="flex-1 bg-blue-600 text-white font-black py-3 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition">執行篩選分析</button>
+                <button onclick="firstSearch()" id="btn-search" disabled class="flex-1 bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-200 active:scale-95 transition-all text-lg">
+                    請先填寫分數
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto p-4">
-        <section id="search-section" class="mb-6 space-y-3">
-            <div class="flex items-center justify-between px-1">
-                <span id="result-count" class="text-xs font-black text-slate-400 uppercase tracking-widest"></span>
-                <span class="text-[10px] text-slate-300 font-bold">符合門檻之校系清單</span>
+    <main class="max-w-6xl mx-auto p-4 sm:p-6">
+        <section id="search-section" class="mb-8 space-y-4">
+            <div class="flex items-center justify-between px-2">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">符合門檻之校系結果</h2>
+                <span id="result-count" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black">0 筆</span>
             </div>
-            <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 輸入關鍵字進一步篩選 (選填)" class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold focus:ring-2 ring-blue-600 shadow-sm">
+            <div class="relative group">
+                <input type="text" id="keyword" oninput="runFilter()" placeholder="🔍 進一步搜尋大學名稱或科系名稱 (例如：台大、電機)..." class="w-full bg-white border-2 border-slate-100 rounded-3xl px-6 py-4 text-base font-bold shadow-sm focus:ring-4 ring-blue-50/50 focus:border-blue-500 transition-all outline-none">
+            </div>
         </section>
 
-        <div id="result-container" class="space-y-3">
-            <div class="py-20 text-center">
-                <p class="text-slate-300 font-black">請輸入分數後點擊「執行篩選分析」</p>
+        <div id="result-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2 py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200">
+                <p class="text-slate-300 font-black text-lg">填寫上方分數以獲取分析結果</p>
             </div>
         </div>
     </main>
@@ -106,25 +123,32 @@
             try {
                 const res = await fetch('data.json');
                 db = await res.json();
-                updateUI();
-            } catch (e) { console.error("資料載入失敗"); }
+                document.getElementById('data-status').innerText = "資料庫連線正常";
+                document.getElementById('btn-search').disabled = false;
+                document.getElementById('btn-search').innerText = "立即篩選分析";
+            } catch (e) {
+                document.getElementById('data-status').innerText = "資料庫連線失敗";
+            }
         }
 
-        function updateUI() {
-            ['ch','en','ma','mb','so','sc'].forEach(id => {
-                const sub = id==='ch'?'國文':id==='en'?'英文':id==='ma'?'數學A':id==='mb'?'數學B':id==='so'?'社會':'自然';
-                const score = parseInt(document.getElementById(id).value || 0);
-                const arr = stdMap[sub];
-                let level = "未達標";
-                if(score >= arr[0]) level="頂標";
-                else if(score >= arr[1]) level="前標";
-                else if(score >= arr[2]) level="均標";
-                else if(score >= arr[3]) level="後標";
-                else if(score >= arr[4]) level="底標";
+        function updateLevels() {
+            const subs = ['ch','en','ma','mb','so','sc'];
+            subs.forEach(id => {
+                const subName = id==='ch'?'國文':id==='en'?'英文':id==='ma'?'數學A':id==='mb'?'數學B':id==='so'?'社會':'自然';
+                const val = parseInt(document.getElementById(id).value);
+                const info = document.getElementById('level-'+id);
+                if(!val) { info.innerText = ""; return; }
                 
-                const el = document.getElementById('info-'+id);
-                el.innerText = level;
-                el.className = `level-label h-4 text-${level==='頂標'?'red':level==='前標'?'orange':'blue'}-600`;
+                const arr = stdMap[subName];
+                let lv = "底標以下";
+                let color = "text-slate-300";
+                if(val >= arr[0]) { lv="頂標"; color="text-red-600"; }
+                else if(val >= arr[1]) { lv="前標"; color="text-orange-500"; }
+                else if(val >= arr[2]) { lv="均標"; color="text-blue-600"; }
+                else if(val >= arr[3]) { lv="後標"; color="text-slate-500"; }
+                else if(val >= arr[4]) { lv="底標"; color="text-amber-700"; }
+                info.innerText = lv;
+                info.className = `text-[10px] text-center mt-1 font-black h-3 ${color}`;
             });
         }
 
@@ -134,38 +158,40 @@
             return 0;
         }
 
-        function runFirstFilter() {
+        function firstSearch() {
             document.getElementById('search-section').style.display = 'block';
             runFilter();
-            // 自動滾動到結果區
-            window.scrollTo({ top: document.getElementById('search-section').offsetTop - 100, behavior: 'smooth' });
+            window.scrollTo({ top: document.getElementById('search-section').offsetTop - 250, behavior: 'smooth' });
         }
 
-        function renderHistoryRow(item, yr) {
+        function renderHist(item, yr) {
             const n1 = item[yr+'_一輪人數'] || '--';
             const s1 = (item[yr+'_一輪標準'] || '--').split('\n')[0];
             const n2 = item[yr+'_二輪人數'] || '--';
             const s2 = (item[yr+'_二輪標準'] || '--').split('\n')[0];
             
-            if(n1 === '--' && n2 === '--') return `<div class="bg-slate-50 rounded-lg p-2 text-center text-slate-300 text-[10px] font-bold">${yr} 無資料</div>`;
+            if(n1 === '--' && n2 === '--') return `<div class="bg-slate-50 rounded-xl p-2 text-center text-[10px] text-slate-300 font-bold">${yr} 無數據</div>`;
 
             return `
-                <div class="bg-slate-50 border border-slate-100 rounded-lg p-2">
-                    <div class="text-[9px] font-black text-slate-400 mb-1 flex justify-between">
-                        <span>${yr}年度</span>
-                        <span class="text-blue-500">標準%</span>
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3">
+                    <div class="text-[9px] font-black text-slate-400 mb-2 border-b pb-1 flex justify-between uppercase">
+                        <span>${yr}學年度</span>
+                        <span class="text-blue-600">錄取數據</span>
                     </div>
-                    <div class="grid grid-cols-2 text-[11px] leading-tight">
-                        <div class="font-bold text-slate-800">一：${n1}人</div>
-                        <div class="text-right text-red-600 font-black">${s1}</div>
-                        <div class="font-bold text-slate-800">二：${n2}人</div>
-                        <div class="text-right text-slate-400 font-bold">${s2}</div>
+                    <div class="space-y-1 text-[11px] leading-tight">
+                        <div class="flex justify-between">
+                            <span class="font-bold text-slate-800">一階：${n1}人</span>
+                            <span class="font-black text-red-600">(${s1})</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold text-slate-800">二階：${n2}人</span>
+                            <span class="font-bold text-slate-400">(${s2})</span>
+                        </div>
                     </div>
                 </div>`;
         }
 
         function runFilter() {
-            if(db.length === 0) return;
             const u = {
                 '國文': getPt('國文', parseInt(document.getElementById('ch').value || 0)),
                 '英文': getPt('英文', parseInt(document.getElementById('en').value || 0)),
@@ -185,33 +211,36 @@
                        (i['社會門檻點數']||0) <= u['社會'] && (i['自然門檻點數']||0) <= u['自然'];
             });
 
-            document.getElementById('result-count').innerText = `FOUND ${res.length}`;
+            document.getElementById('result-count').innerText = `${res.length} 筆符合`;
             const container = document.getElementById('result-container');
             
             container.innerHTML = res.map(i => `
-                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm hover:border-blue-400 transition-colors">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="flex-1 pr-2">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="bg-slate-950 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">${i['類群']}</span>
-                                <a href="${i['網址']}" target="_blank" class="text-blue-600 text-[10px] font-bold hover:underline flex items-center">
-                                    校系分則簡章 ↗
+                <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                    <div class="flex flex-col gap-4 mb-6">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-slate-950 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">${i['類群']}</span>
+                                <a href="${i['網址']}" target="_blank" class="text-blue-600 text-[10px] font-black flex items-center gap-1 hover:underline">
+                                    校系簡章分則 ↗
                                 </a>
                             </div>
-                            <h3 class="text-base font-black text-slate-950 leading-tight">${i['校系代碼名稱']}</h3>
+                            <h3 class="text-xl font-black text-slate-900 leading-tight">${i['校系代碼名稱']}</h3>
                         </div>
-                        <div class="grid grid-cols-3 gap-1">
+                        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-100">
                             ${['國文','英文','數學A','數學B','社會','自然'].map(s => {
                                 const t = i[s+'門檻'];
-                                return `<span class="std-tag ${t && t !== '--' ? 'tag-'+t : 'tag-不採計'}">${t || '--'}</span>`;
+                                return `<div class="flex flex-col items-center gap-1">
+                                            <span class="text-[8px] font-black text-slate-300 uppercase">${s.replace('數學','數')}</span>
+                                            <span class="std-tag ${t && t !== '--' ? 'tag-'+t : 'tag-不採計'}">${t || '--'}</span>
+                                        </div>`;
                             }).join('')}
                         </div>
                     </div>
 
-                    <div class="history-grid">
-                        ${renderHistoryRow(i, '114')}
-                        ${renderHistoryRow(i, '113')}
-                        ${renderHistoryRow(i, '112')}
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        ${renderHist(i, '114')}
+                        ${renderHist(i, '113')}
+                        ${renderHist(i, '112')}
                     </div>
                 </div>
             `).join('');
