@@ -145,10 +145,23 @@ function printDiscussion(){
  const f=readFilter(),checked=hasSearched&&validRank(f);
  const scores=checked?`校內排名 ${f.rank}%；${Object.entries(subjects).map(([k,s])=>s+' '+(['未填／未達底標','底標','後標','均標','前標','頂標'][f.levels[k]])).join('；')}；英聽 ${['未填／F級','C級','B級','A級'][f.hearing]}`:'尚未提供完整有效的校排，成績未檢核。';
  const note=el('discussion-notes').value;
- const overview=`<h1>116 繁星推薦・師生討論單</h1><h2>全部收藏 ${items.length} 系 · ${new Set(items.map(i=>i['學校代碼'])).size} 所大學</h2><p>${esc(scores)}</p><p>姓名：________________　班級：________________　討論日期：________________</p>${note?`<p>討論筆記：${esc(note)}</p>`:''}<table class="print-overview"><thead><tr><th>候選科系</th><th>招生名額</th><th>外加名額</th><th>校排門檻</th><th>本次成績檢核</th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(i['校系代碼名稱'])}（${esc(i['學系代碼'])}）<br>${esc(i['類群'])}</td><td>${esc(i['招生名額'])}</td><td>${esc(i['外加名額'])}</td><td>前${esc(i['在校排名門檻'])}%</td><td>${!checked?'未檢核':eligibilityReasons(i,f).length?esc(eligibilityReasons(i,f).join('；')):'符合成績門檻'}</td></tr>`).join('')}</tbody></table>`;
- const historicalOverview=`<h2>歷年錄取比較</h2><table><thead><tr><th>候選科系</th>${years.map(y=>`<th>${y} 錄取</th>`).join('')}</tr></thead><tbody>${items.map(i=>`<tr><th>${esc(i['校系代碼名稱'])}<br>${esc(i['類群'])}</th>${years.map(y=>`<td>${!Object.hasOwn(i,y+'_一輪人數')?'無對應資料':esc('一輪 '+i[y+'_一輪人數']+' 人（'+full(i[y+'_一輪標準']).split('\n')[0]+'）\n二輪 '+i[y+'_二輪人數']+' 人（'+full(i[y+'_二輪標準']).split('\n')[0]+'）')}</td>`).join('')}</tr>`).join('')}</tbody></table><p class="print-footnote">括號為第一項在校排名標準；各校系完整比序見後附明細。</p>`;
- const detail=items.map(i=>`<section class="print-candidate"><h2>${esc(i['校系代碼名稱'])}</h2><p>116 門檻：${Object.values(subjects).map(s=>s+' '+esc(i[s+'檢定'])).join('；')}；英聽 ${esc(i['大考英聽檢定'])}</p><p>116 比序：${['一','二','三','四','五','六','七'].map(n=>i['分發比序項目'+n]).filter(Boolean).map(esc).join(' → ')}</p><table><thead><tr>${years.map(y=>`<th>${y} 錄取紀錄</th>`).join('')}</tr></thead><tbody><tr>${years.map(y=>`<td>${!Object.hasOwn(i,y+'_一輪人數')?'無對應資料':esc('一輪 '+i[y+'_一輪人數']+' 人；二輪 '+i[y+'_二輪人數']+' 人\n\n比序項目：\n'+full(i[y+'_分發項目'])+'\n\n一輪標準：\n'+full(i[y+'_一輪標準'])+'\n\n二輪標準：\n'+full(i[y+'_二輪標準']))}</td>`).join('')}</tr></tbody></table></section>`).join('');
- el('print-area').innerHTML=overview+historicalOverview+detail+'<p class="print-footnote">符合成績門檻不代表錄取。高中推薦資格、校內推薦順序與正式選填，請依116簡章及所屬高中規定辦理。歷年資料僅供參考。</p>';
+ const head=`<header class="discussion-header"><h1>我的校系資料</h1><p class="discussion-subtitle">116 學年度繁星推薦 · 收藏 ${items.length} 系</p><p>姓名：________________　班級：________________　討論日期：________________</p><p class="print-scores">${esc(scores)}</p>${note?`<p>討論筆記：${esc(note)}</p>`:''}</header>`;
+ const sections=['第一類群','第二類群','第三類群'].map(group=>{
+  const rows=items.filter(i=>i['類群']===group);
+  const title=`<h2 class="print-group-title">${group}${rows.length?`<span> ${rows.length} 系</span>`:''}</h2>`;
+  if(!rows.length)return `<section class="print-group">${title}</section>`;
+  return `<section class="print-group">${title}<table class="discussion-table"><colgroup><col style="width:20%"><col style="width:18%"><col style="width:14%">${years.map(()=>'<col style="width:12%">').join('')}</colgroup><thead><tr><th scope="col">學校／科系</th><th scope="col">116 檢定門檻</th><th scope="col">116 名額／校排</th>${years.map(y=>`<th scope="col">${y} 錄取</th>`).join('')}</tr></thead><tbody>${rows.map(i=>{
+   const reasons=checked?eligibilityReasons(i,f):[];
+   const math=points[i['數學A檢定']]>0&&points[i['數學B檢定']]>0;
+   return `<tr class="discussion-row"><th scope="row"><span class="print-school">${esc(i['學校名稱'])}</span><strong>${esc(i['學系名稱'])}</strong><span class="print-code">${esc(i['學系代碼'])}</span>${reasons.length?'<span class="print-status">未通過本次成績門檻</span>':''}</th><td><div class="print-thresholds">${Object.values(subjects).map(sub=>`<span>${esc(sub.replace('數學','數'))}：${esc(i[sub+'檢定'])}</span>`).join('')}</div><div>英聽：${esc(i['大考英聽檢定'])}</div>${math?'<div class="print-small">數A／數B 擇一達標</div>':''}</td><td>招生：${esc(i['招生名額'])} 名<br>外加：${esc(i['外加名額'])} 名<br>校排：前 ${esc(i['在校排名門檻'])}%</td>${years.map(y=>{
+    if(!Object.hasOwn(i,y+'_一輪人數'))return '<td class="print-no-data">無對應資料</td>';
+    const first=esc(full(i[y+'_一輪標準']).split('\n')[0]);
+    const second=esc(full(i[y+'_二輪標準']).split('\n')[0]);
+    return `<td><div class="print-round">一輪 ${esc(i[y+'_一輪人數'])} 人<span>${first}</span></div><div class="print-round">二輪 ${esc(i[y+'_二輪人數'])} 人<span>${second}</span></div></td>`;
+   }).join('')}</tr>`;
+  }).join('')}</tbody></table></section>`;
+ }).join('');
+ el('print-area').innerHTML=head+sections;
  window.print();
 }
 el('data-status').textContent=db.length?`116 · ${db.length.toLocaleString()} 筆`:'載入失敗';el('btn-search').disabled=!db.length;

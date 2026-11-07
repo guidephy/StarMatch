@@ -10,3 +10,28 @@
 @media(max-width:760px){.brand{font-size:17px}.score-summary .muted{display:none}#score-panel{padding:16px}.score-title{font-size:15px}#result-container{scroll-margin-top:190px}.header-inner{gap:10px}.score-summary-text{max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.saved-controls{padding:12px}}
 @media(max-width:480px){.brand{font-size:15px;max-width:53%}.header-inner button{font-size:12px;padding:8px}#return-nav{max-width:45%}.source{font-size:12px}.view-tabs{gap:3px}.view-tabs button{font-size:13px;padding:9px 10px}}
 @media print{.site-header{display:none!important}#score-panel{position:static}}
+
+@media print{
+ @page{size:A4 landscape;margin:10mm}
+ #print-area .discussion-header{border-bottom:1.5px solid #53695d;padding-bottom:8px;margin-bottom:10px}
+ #print-area .discussion-header h1{font-size:19pt;letter-spacing:.08em;margin-bottom:4px}
+ #print-area .discussion-header p{font-size:9pt;margin:3px 0}
+ #print-area .discussion-subtitle{color:#53695d}
+ #print-area .print-group-title{font-size:12pt;border-left:4px solid #657e6b;padding-left:8px;margin:14px 0 6px;break-after:avoid}
+ #print-area .print-group-title span{font-size:8pt;color:#666;font-weight:normal;margin-left:6px}
+ #print-area .discussion-table{font-size:8.5pt;line-height:1.5}
+ #print-area .discussion-table thead th{background:#edf1ed!important;color:#263b2e;font-size:8pt;padding:7px 6px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ #print-area .discussion-table th,#print-area .discussion-table td{border:1px solid #bfc8c0;padding:7px 6px;white-space:normal;vertical-align:top;text-align:left}
+ #print-area .discussion-row{break-inside:avoid;page-break-inside:avoid}
+ #print-area .discussion-row>th{font-weight:normal}
+ #print-area .print-school,#print-area .print-code,#print-area .print-status{display:block}
+ #print-area .print-school{font-size:8pt;color:#555;margin-bottom:3px}
+ #print-area .discussion-row strong{display:block;font-size:9pt;line-height:1.5}
+ #print-area .print-code{font-size:7pt;color:#777;margin-top:3px}
+ #print-area .print-thresholds{display:grid;grid-template-columns:1fr 1fr;gap:2px 7px;margin-bottom:3px}
+ #print-area .print-round+ .print-round{margin-top:6px;padding-top:5px;border-top:1px solid #e0e4df}
+ #print-area .print-round span{display:block;font-size:10pt;font-weight:600}
+ #print-area .print-small,#print-area .print-status{font-size:7pt;margin-top:4px}
+ #print-area .print-no-data{color:#777}
+ #print-area .print-footnote{font-size:7.5pt;line-height:1.55;border-top:1px solid #c7cfc8;padding-top:7px;margin-top:12px}
+}
